@@ -1,0 +1,19 @@
+{
+  "name": "new-webpack-express",
+  "version": "0.0.1",
+  "description": "New project with webpack and express backend/dev server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/publicJorn/new-webpack-express.git"
+  },
+  "author": "Jorn Luiten",
+  "license": "The Unlicence",
+  "bugs": {
+    "url": "https://github.com/publicJorn/new-webpack-express/issues"
+  },
+  "homepage": "https://github.com/publicJorn/new-webpack-express"
+}
