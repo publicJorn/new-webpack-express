@@ -13,7 +13,7 @@ module.exports = function (options) {
   var cssLoaders = 'style!css';
   var lessLoaders = cssLoaders + '!less';
 
-  console.log('=== dirname : '+ __dirname + ' ===');
+  //console.log('=== dirname : '+ __dirname + ' ===');
 
   return {
     // Makes sure errors in console map to the correct file
@@ -22,13 +22,17 @@ module.exports = function (options) {
 
     entry: {
       main: [
-        // These two scripts facilitate the updating process
+        // hot-module reloads
         'webpack/hot/dev-server',
+
+        // (non-hot-module reloads)
         'webpack-dev-server/client?http://localhost:8080',
 
-        // Our application
+        // Main bundle
         mainPath
       ],
+
+      // List optional other bundles
       header: headerPath
     },
 
@@ -59,28 +63,29 @@ module.exports = function (options) {
         },
         {
           test: /\.less$/,
-          loader: ExtractTextPlugin.extract(
-            'css?sourceMap!' +
-            'less?sourceMap'
-          )
-          //loader: lessLoaders
+          loader: (options.devtool === 'source-maps') ?
+            ExtractTextPlugin.extract('css?sourceMap!less?sourceMap') : lessLoaders
         }
       ]
     },
 
-    // We have to manually add the Hot Replacement plugin when running
-    // from Node
-    plugins: [
-      // This makes hot module replacement available for all bundles/chunks
-      new webpack.optimize.CommonsChunkPlugin('init.js'),
+    plugins: (function () {
+      var plugins = [
+        // This makes hot module replacement available for all bundles/chunks
+        new webpack.optimize.CommonsChunkPlugin('init.js'),
 
-      new webpack.HotModuleReplacementPlugin(),
+        // We have to manually add the Hot Replacement plugin when running from Node
+        new webpack.HotModuleReplacementPlugin(),
 
-      new HtmlWebpackPlugin({
-        template: templatePath
-      }),
+        new HtmlWebpackPlugin({
+          template: templatePath
+        })
+      ];
 
-      new ExtractTextPlugin('[name].css')
-    ]
+      if (options.devtool === 'source-maps')
+        plugins.push(new ExtractTextPlugin('[name].css'));
+
+      return plugins;
+    })()
   };
 };
